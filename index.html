@@ -31,7 +31,7 @@
         text-align: center;
       }
       .subtitle {
-        font-size: 0.77rem;
+        font-size: 1.1rem;
         letter-spacing: 0.3em;
         color: #7c4dbd;
         text-transform: uppercase;
@@ -64,8 +64,15 @@
       }
       .readout .desc {
         color: #7c4dbd;
-        font-size: 0.748rem;
+        font-size: 1rem;
         letter-spacing: 0.05em;
+      }
+      .readout .camper {
+        display: block;
+        color: #555;
+        font-size: 1rem;
+        font-style: italic;
+        margin-top: 4px;
       }
       .slider-container {
         margin-top: 20px;
@@ -113,9 +120,26 @@
         border: none;
         box-shadow: 0 0 8px rgba(224, 34, 110, 0.5);
       }
+      .side-logo {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        width: clamp(110px, 13vw, 190px);
+        opacity: 0.85;
+        pointer-events: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .logo-left  { left:  clamp(40px, 9vw, 140px); }
+      .logo-right { right: clamp(40px, 9vw, 140px); }
+      @media (max-width: 600px) {
+        .side-logo { display: none; }
+      }
     </style>
   </head>
   <body>
+    <img class="side-logo logo-left"  src="sideburn-logo.png" alt="Sideburn">
+    <img class="side-logo logo-right" src="sideburn-logo.png" alt="Sideburn">
     <h1>Sideburn 2026</h1>
     <div class="subtitle">Camp Placement Tool</div>
 
@@ -305,9 +329,8 @@
 
     <div class="readout">
       <span class="label" id="zoneName">MIDFIELD</span>
-      <span class="desc" id="zoneDesc"
-        >Drag the marker to explore the tradeoff</span
-      >
+      <span class="desc" id="zoneDesc">Drag the marker to explore the tradeoff</span>
+      <span class="camper" id="zoneCamper"></span>
     </div>
 
     <div class="slider-container">
@@ -334,6 +357,7 @@
       const dotLabel = document.getElementById("dotLabel");
       const zoneName = document.getElementById("zoneName");
       const zoneDesc = document.getElementById("zoneDesc");
+      const zoneCamper = document.getElementById("zoneCamper");
       const slider = document.getElementById("tradeoffSlider");
 
       const x1 = 50,
@@ -367,22 +391,23 @@
         if (t < 0.2) {
           zoneName.textContent = "REMOTE";
           zoneDesc.textContent = "Remote · Quiet nights · Low discovery";
+          zoneCamper.textContent = "“Where is everybody?”";
         } else if (t < 0.4) {
           zoneName.textContent = "SOFT EDGE";
-          zoneDesc.textContent =
-            "Some foot traffic · Decent rest · Findable if you look";
+          zoneDesc.textContent = "Some foot traffic · Decent rest · Findable if you look";
+          zoneCamper.textContent = "“I can hear the bass… faintly”";
         } else if (t < 0.6) {
           zoneName.textContent = "MIDFIELD";
-          zoneDesc.textContent =
-            "Balanced tradeoff · Your call on which matters more";
+          zoneDesc.textContent = "Balanced tradeoff · Your call on which matters more";
+          zoneCamper.textContent = "“We get to vibe AND to nap”";
         } else if (t < 0.8) {
           zoneName.textContent = "VISIBLE CAMP";
-          zoneDesc.textContent =
-            "Good exposure · Noisier nights · High traffic zone";
+          zoneDesc.textContent = "Good exposure · Noisier nights · High traffic zone";
+          zoneCamper.textContent = "“Welcome! No seriously, welcome to the endless party!”";
         } else {
           zoneName.textContent = "MAIN DRAG";
-          zoneDesc.textContent =
-            "Maximum visibility · Maximum noise · Sleep with earplugs";
+          zoneDesc.textContent = "Maximum visibility · Maximum noise · Sleep with earplugs";
+          zoneCamper.textContent = "“Sleep is a social construct”";
         }
       }
 
