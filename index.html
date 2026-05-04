@@ -461,6 +461,77 @@
       slider.addEventListener("input", () => setDotPosition(slider.value / 100));
 
       setDotPosition(0.5);
+
+      // Hook for audio — defined by the audio script below
+      window._onZone = null;
+      window._startAudio = null;
+
+      const origUpdateZone = updateZone;
+      updateZone = function(t) {
+        origUpdateZone(t);
+        try { if (window._onZone) window._onZone(t); } catch(e) {}
+      };
+
+      svg.addEventListener("mousedown", function() {
+        try { if (window._startAudio) window._startAudio(); } catch(e) {}
+      });
+      slider.addEventListener("mousedown", function() {
+        try { if (window._startAudio) window._startAudio(); } catch(e) {}
+      }, { once: true });
+    </script>
+
+    <script>
+      // Audio — runs after main script; errors here cannot break drag
+      try {
+        var SOUNDS = [
+          "sounds/REMOTE__samwd__kingston-ny-late-summer-midnight-crickets-some-mic-and-freeway-noise-from-middle.wav",
+          "sounds/SOFT_EDGE__0alexis0__music-festival-distant.mp3",
+          "sounds/MIDFIELD__spyrospolitis__apollo89-idle-conversation-groups-people-small-town-square-athens-greece.wav",
+          "sounds/VISIBLE_CAMP__kyles__ganpati-street-festival-large-exterior-crowd-with-distant-music-and-nearby-cymbals-and-man-shouting-on-megaphone-india.flac",
+          "sounds/MAIN_DRAG__xcreenplay__booji-rave.wav"
+        ];
+        var tracks = SOUNDS.map(function(src) {
+          var a = new Audio(src); a.loop = true; a.volume = 0; return a;
+        });
+        var activeIdx = -1, audioOn = false, fadeTimer = null;
+
+        function zoneIdx(t) {
+          if (t < 0.2) return 0; if (t < 0.4) return 1;
+          if (t < 0.6) return 2; if (t < 0.8) return 3; return 4;
+        }
+
+        function crossfade(from, to) {
+          if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+          tracks[to].volume = 0;
+          tracks[to].play().catch(function(){});
+          var step = 0;
+          fadeTimer = setInterval(function() {
+            step++;
+            var p = step / 40;
+            if (from >= 0) tracks[from].volume = Math.max(0, 1 - p);
+            tracks[to].volume = Math.min(1, p);
+            if (step >= 40) {
+              clearInterval(fadeTimer); fadeTimer = null;
+              if (from >= 0) { tracks[from].pause(); tracks[from].volume = 0; }
+            }
+          }, 20);
+        }
+
+        window._onZone = function(t) {
+          var idx = zoneIdx(t);
+          if (idx === activeIdx) return;
+          var prev = activeIdx; activeIdx = idx;
+          if (audioOn) crossfade(prev, idx);
+        };
+
+        window._startAudio = function() {
+          if (audioOn) return;
+          audioOn = true;
+          var idx = activeIdx < 0 ? 2 : activeIdx;
+          activeIdx = idx;
+          crossfade(-1, idx);
+        };
+      } catch(e) { console.warn("Audio init failed:", e); }
     </script>
   </body>
 </html>
