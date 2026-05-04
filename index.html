@@ -6,14 +6,42 @@
     <title>Sideburn 2026 — Camp Placement</title>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Share+Tech+Mono&family=Great+Vibes&display=swap");
+      :root {
+        --bg: #ffffff;
+        --text: #222;
+        --muted: #555;
+        --subtitle: #7c4dbd;
+        --grid: #e0e0e0;
+        --axis: #bbb;
+        --axis-title: #555;
+        --label-muted: #555;
+        --title-grad: linear-gradient(100deg, #7c4dbd 0%, #4caf50 28%, #f5c000 55%, #ff6b1a 78%, #e0226e 100%);
+        --title-shadow: none;
+        --toggle-bg: #f0f0f0;
+        --toggle-border: #ccc;
+      }
+      [data-theme="dark"] {
+        --bg: #0f0f14;
+        --text: #e8e8e8;
+        --muted: #aaa;
+        --subtitle: #b48dde;
+        --grid: #26262f;
+        --axis: #555;
+        --axis-title: #aaa;
+        --label-muted: #999;
+        --title-grad: linear-gradient(100deg, #b48dde 0%, #6ed87a 28%, #ffd84d 55%, #ff9357 78%, #ff5a96 100%);
+        --title-shadow: drop-shadow(0 0 12px rgba(180, 141, 222, 0.35));
+        --toggle-bg: #1c1c24;
+        --toggle-border: #333;
+      }
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
       body {
-        background: #ffffff;
-        color: #222;
+        background: var(--bg);
+        color: var(--text);
         font-family: "Share Tech Mono", monospace;
         min-height: 100vh;
         display: flex;
@@ -21,7 +49,31 @@
         align-items: center;
         justify-content: center;
         padding: 20px;
+        transition: background 0.3s ease, color 0.3s ease;
       }
+      .theme-toggle {
+        position: absolute;
+        top: 50%;
+        right: -54px;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--toggle-bg);
+        border: 1px solid var(--toggle-border);
+        cursor: pointer;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        color: var(--text);
+        transition: background 0.3s ease, border-color 0.3s ease;
+      }
+      @media (max-width: 600px) {
+        .theme-toggle { right: 4px; width: 32px; height: 32px; font-size: 0.9rem; }
+      }
+      .theme-toggle:hover { opacity: 0.85; }
       .title-sparks {
         position: relative;
         text-align: center;
@@ -30,10 +82,11 @@
       h1 {
         font-family: "Great Vibes", cursive;
         font-size: clamp(2.8rem, 8.5vw, 5.2rem);
-        background: linear-gradient(100deg, #7c4dbd 0%, #4caf50 28%, #f5c000 55%, #ff6b1a 78%, #e0226e 100%);
+        background: var(--title-grad);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        filter: var(--title-shadow);
         position: relative;
         z-index: 1;
         margin: 0;
@@ -55,7 +108,7 @@
       .subtitle {
         font-size: 1.1rem;
         letter-spacing: 0.3em;
-        color: #7c4dbd;
+        color: var(--subtitle);
         text-transform: uppercase;
         margin-bottom: 24px;
         text-align: center;
@@ -91,7 +144,7 @@
       }
       .readout .camper {
         display: block;
-        color: #555;
+        color: var(--muted);
         font-size: 1rem;
         font-style: italic;
         margin-top: 4px;
@@ -106,7 +159,7 @@
         margin-bottom: 8px;
         font-size: 0.77rem;
         letter-spacing: 0.1em;
-        color: #555;
+        color: var(--muted);
       }
       .slider {
         width: min(80vw, 400px);
@@ -152,19 +205,25 @@
         -webkit-user-select: none;
         user-select: none;
       }
-      .logo-left  { left:  clamp(70px, 11vw, 165px); }
-      .logo-right { right: clamp(70px, 11vw, 165px); }
+      .logo-left  { left:  clamp(140px, 20vw, 280px); }
+      .logo-right { right: clamp(140px, 20vw, 280px); }
       @media (max-width: 600px) {
         .side-logo { display: none; }
       }
+      [data-theme="dark"] svg.graph g[stroke="#e0e0e0"] { stroke: var(--grid); }
+      [data-theme="dark"] svg.graph line[stroke="#bbb"],
+      [data-theme="dark"] svg.graph polygon[fill="#bbb"] { stroke: var(--axis); fill: var(--axis); }
+      [data-theme="dark"] svg.graph text[fill="#555"] { fill: var(--axis-title); }
+      .drag-hint { color: var(--muted); }
 
     </style>
   </head>
   <body>
-    <img class="side-logo logo-left"  src="3D SideBurn Logo.jpeg" alt="Sideburn">
-    <img class="side-logo logo-right" src="3D SideBurn Logo.jpeg" alt="Sideburn">
+    <img class="side-logo logo-left"  src="3D SideBurn Logo.png" alt="Sideburn">
+    <img class="side-logo logo-right" src="3D SideBurn Logo.png" alt="Sideburn">
     <div class="title-sparks" id="titleSparks">
       <h1>Sideburn 2026</h1>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button>
     </div>
     <div class="subtitle">Camp Placement Tool</div>
 
@@ -273,7 +332,7 @@
         </text>
         <text
           x="200"
-          y="392"
+          y="400"
           font-family="Share Tech Mono,monospace"
           font-size="15"
           fill="#555"
@@ -374,6 +433,23 @@
     </div>
 
     <div class="drag-hint">↔ drag along the line or use the slider</div>
+
+    <script>
+      (function() {
+        const root = document.documentElement;
+        const btn = document.getElementById("themeToggle");
+        const saved = localStorage.getItem("theme");
+        const initial = saved || "dark";
+        root.setAttribute("data-theme", initial);
+        btn.textContent = initial === "dark" ? "☀" : "☾";
+        btn.addEventListener("click", function() {
+          const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          root.setAttribute("data-theme", next);
+          btn.textContent = next === "dark" ? "☀" : "☾";
+          localStorage.setItem("theme", next);
+        });
+      })();
+    </script>
 
     <script>
       const svg = document.getElementById("graph");
