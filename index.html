@@ -506,13 +506,21 @@
 
         function crossfade(from, to) {
           if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+          // Kill every track that isn't part of this transition
+          for (var i = 0; i < tracks.length; i++) {
+            if (i !== from && i !== to) {
+              tracks[i].volume = 0;
+              tracks[i].pause();
+            }
+          }
+          var fromVol = (from >= 0) ? tracks[from].volume : 0;
           tracks[to].volume = 0;
           tracks[to].play().catch(function(){});
           var step = 0;
           fadeTimer = setInterval(function() {
             step++;
             var p = step / 40;
-            if (from >= 0) tracks[from].volume = Math.max(0, 1 - p);
+            if (from >= 0) tracks[from].volume = Math.max(0, fromVol * (1 - p));
             tracks[to].volume = Math.min(1, p);
             if (step >= 40) {
               clearInterval(fadeTimer); fadeTimer = null;
