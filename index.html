@@ -544,6 +544,24 @@
           activeIdx = idx;
           crossfade(-1, idx);
         };
+
+        // Preload: start midfield (current zone) immediately, then chain
+        // the rest smallest-first so each zone is ready before the user reaches it.
+        // [1=SOFT_EDGE 883KB, 4=MAIN_DRAG 2MB, 0=REMOTE 7MB, 3=VISIBLE_CAMP, 2=MIDFIELD 35MB]
+        tracks[2].preload = "auto"; tracks[2].load(); // current zone — highest priority
+
+        (function loadNext(queue) {
+          if (!queue.length) return;
+          var idx = queue.shift();
+          var t = tracks[idx];
+          t.preload = "auto";
+          t.load();
+          var done = false;
+          function advance() { if (!done) { done = true; loadNext(queue); } }
+          t.addEventListener("canplaythrough", advance, { once: true });
+          setTimeout(advance, 10000); // fallback if canplaythrough never fires
+        }([1, 4, 0, 3]));
+
       } catch(e) { console.warn("Audio init failed:", e); }
     </script>
 
