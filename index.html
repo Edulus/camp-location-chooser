@@ -491,7 +491,11 @@
           "sounds/MAIN_DRAG__xcreenplay__booji-rave.wav"
         ];
         var tracks = SOUNDS.map(function(src) {
-          var a = new Audio(src); a.loop = true; a.volume = 0; return a;
+          var a = new Audio(src);
+          a.loop = true;
+          a.volume = 0;
+          a.preload = "none";
+          return a;
         });
         var activeIdx = -1, audioOn = false, fadeTimer = null;
 
