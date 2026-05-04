@@ -70,7 +70,7 @@
         color: var(--text);
         transition: background 0.3s ease, border-color 0.3s ease;
       }
-      @media (max-width: 600px) {
+      @media (max-width: 900px) {
         .theme-toggle { right: 4px; width: 32px; height: 32px; font-size: 0.9rem; }
       }
       .theme-toggle:hover { opacity: 0.85; }
@@ -207,8 +207,22 @@
       }
       .logo-left  { left:  clamp(140px, 20vw, 280px); }
       .logo-right { right: clamp(140px, 20vw, 280px); }
-      @media (max-width: 600px) {
+      @media (max-width: 900px) {
         .side-logo { display: none; }
+        body {
+          min-height: 100dvh;
+          justify-content: flex-start;
+          padding: 16px 12px;
+          gap: 4px;
+        }
+        h1 { font-size: clamp(3.4rem, 14vw, 5.5rem); }
+        .subtitle { font-size: 0.95rem; letter-spacing: 0.22em; margin-bottom: 14px; }
+        .graph-wrapper { width: min(94vw, 70vh); margin-top: 4px; }
+        .readout { margin-top: 10px; }
+        .slider-container { margin-top: 12px; }
+        .slider { width: 88vw; }
+        .slider::-webkit-slider-thumb { width: 26px; height: 26px; }
+        .slider::-moz-range-thumb { width: 26px; height: 26px; }
       }
       [data-theme="dark"] svg.graph g[stroke="#e0e0e0"] { stroke: var(--grid); }
       [data-theme="dark"] svg.graph line[stroke="#bbb"],
@@ -573,12 +587,14 @@
         try { if (window._onZone) window._onZone(t); } catch(e) {}
       };
 
-      svg.addEventListener("mousedown", function() {
+      function _kickAudio() {
         try { if (window._startAudio) window._startAudio(); } catch(e) {}
-      });
-      slider.addEventListener("mousedown", function() {
-        try { if (window._startAudio) window._startAudio(); } catch(e) {}
-      }, { once: true });
+      }
+      svg.addEventListener("mousedown", _kickAudio);
+      svg.addEventListener("touchstart", _kickAudio, { passive: true });
+      slider.addEventListener("mousedown", _kickAudio, { once: true });
+      slider.addEventListener("touchstart", _kickAudio, { passive: true, once: true });
+      slider.addEventListener("input", _kickAudio, { once: true });
     </script>
 
     <script>
