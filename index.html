@@ -208,21 +208,23 @@
       .logo-left  { left:  clamp(140px, 20vw, 280px); }
       .logo-right { right: clamp(140px, 20vw, 280px); }
       @media (max-width: 900px) {
-        .side-logo { display: none; }
         body {
           min-height: 100dvh;
           justify-content: flex-start;
-          padding: 16px 12px;
-          gap: 4px;
+          padding: 12px 8px;
+          gap: 2px;
         }
         h1 { font-size: clamp(3.4rem, 14vw, 5.5rem); }
-        .subtitle { font-size: 0.95rem; letter-spacing: 0.22em; margin-bottom: 14px; }
-        .graph-wrapper { width: min(94vw, 70vh); margin-top: 4px; }
-        .readout { margin-top: 10px; }
-        .slider-container { margin-top: 12px; }
-        .slider { width: 88vw; }
+        .subtitle { font-size: 0.95rem; letter-spacing: 0.22em; margin-bottom: 10px; }
+        .graph-wrapper { width: min(96vw, 72vh); margin-top: 4px; }
+        .readout { margin-top: 8px; }
+        .slider-container { margin-top: 10px; }
+        .slider { width: 90vw; }
         .slider::-webkit-slider-thumb { width: 26px; height: 26px; }
         .slider::-moz-range-thumb { width: 26px; height: 26px; }
+        .side-logo { width: clamp(60px, 16vw, 110px); opacity: 0.75; }
+        .logo-left  { left:  4px; }
+        .logo-right { right: 4px; }
       }
       [data-theme="dark"] svg.graph g[stroke="#e0e0e0"] { stroke: var(--grid); }
       [data-theme="dark"] svg.graph line[stroke="#bbb"],
