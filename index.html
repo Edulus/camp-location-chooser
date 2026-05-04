@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sideburn 2026 — Camp Placement</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Share+Tech+Mono&family=Pacifico&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Share+Tech+Mono&family=Great+Vibes&display=swap");
       * {
         margin: 0;
         padding: 0;
@@ -28,8 +28,8 @@
         margin-bottom: 6px;
       }
       h1 {
-        font-family: "Pacifico", cursive;
-        font-size: clamp(2rem, 6.5vw, 3.8rem);
+        font-family: "Great Vibes", cursive;
+        font-size: clamp(2.8rem, 8.5vw, 5.2rem);
         background: linear-gradient(100deg, #7c4dbd 0%, #4caf50 28%, #f5c000 55%, #ff6b1a 78%, #e0226e 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -50,7 +50,7 @@
       @keyframes sparkFloat {
         0%   { opacity: 0; transform: translateY(0) scale(1); }
         20%  { opacity: 0.9; }
-        100% { opacity: 0; transform: translateY(-40px) scale(0); }
+        100% { opacity: 0; transform: translateY(var(--rise, -40px)) scale(0); }
       }
       .subtitle {
         font-size: 1.1rem;
@@ -275,7 +275,7 @@
           x="200"
           y="392"
           font-family="Share Tech Mono,monospace"
-          font-size="11"
+          font-size="15"
           fill="#555"
           letter-spacing="3"
           text-anchor="middle"
@@ -287,7 +287,7 @@
         <text
           transform="rotate(-90) translate(-200, 22)"
           font-family="Share Tech Mono,monospace"
-          font-size="12"
+          font-size="15"
           fill="#555"
           letter-spacing="3"
           text-anchor="middle"
@@ -640,14 +640,15 @@
         tRot = ZONES[idx][2]; tBnc  = ZONES[idx][3];
       }
 
-      var origOnZone = window._onZone;
-      window._onZone = function(t) {
-        if (origOnZone) origOnZone(t);
-        var idx = t < 0.2 ? 0 : t < 0.4 ? 1 : t < 0.6 ? 2 : t < 0.8 ? 3 : 4;
-        setLogoZone(idx);
-      };
-
-      // Title sparks
+      // Spark zone params: [minSize px, maxSize px, minDur s, maxDur s, rise px]
+      var SPARK_ZONES = [
+        [ 1.5,  3,  3.5, 5.5,  20 ],  // REMOTE       — tiny, slow, barely float
+        [ 2,    4,  2.5, 4.5,  30 ],  // SOFT EDGE
+        [ 2.5,  6,  2.0, 3.5,  42 ],  // MIDFIELD
+        [ 3.5,  8,  1.3, 2.5,  60 ],  // VISIBLE CAMP
+        [ 5,   13,  0.8, 1.6,  85 ],  // MAIN DRAG    — large, fast, rocket
+      ];
+      var sparkEls = [];
       const sparksContainer = document.getElementById("titleSparks");
       const sparkColors = ["#ff6b1a", "#e0226e", "#f5c000", "#7c4dbd", "#4caf50"];
       for (let i = 0; i < 14; i++) {
@@ -657,9 +658,32 @@
         s.style.top = (40 + Math.random() * 30) + "%";
         s.style.background = sparkColors[Math.floor(Math.random() * sparkColors.length)];
         s.style.animationDelay = (Math.random() * 2.5) + "s";
-        s.style.animationDuration = (1.8 + Math.random() * 1.5) + "s";
+        s._r = Math.random(); // per-spark variety factor, fixed at creation
         sparksContainer.appendChild(s);
+        sparkEls.push(s);
       }
+
+      function updateSparks(idx) {
+        var z = SPARK_ZONES[idx];
+        sparkEls.forEach(function(s) {
+          var r = s._r;
+          var size = (z[0] + r * (z[1] - z[0])).toFixed(1);
+          var dur  = (z[2] + r * (z[3] - z[2])).toFixed(2);
+          s.style.width  = size + 'px';
+          s.style.height = size + 'px';
+          s.style.animationDuration = dur + 's';
+          s.style.setProperty('--rise', '-' + z[4] + 'px');
+        });
+      }
+      updateSparks(2); // start at midfield
+
+      var origOnZone = window._onZone;
+      window._onZone = function(t) {
+        if (origOnZone) origOnZone(t);
+        var idx = t < 0.2 ? 0 : t < 0.4 ? 1 : t < 0.6 ? 2 : t < 0.8 ? 3 : 4;
+        setLogoZone(idx);
+        updateSparks(idx);
+      };
     </script>
   </body>
 </html>
