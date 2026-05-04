@@ -136,37 +136,6 @@
         .side-logo { display: none; }
       }
 
-      @keyframes logo-remote {
-        0%, 100% { transform: translateY(calc(-50% + 0px)); }
-        50%       { transform: translateY(calc(-50% - 7px)); }
-      }
-      @keyframes logo-soft {
-        0%, 100% { transform: translateY(calc(-50% + 0px)); }
-        50%       { transform: translateY(calc(-50% - 13px)); }
-      }
-      @keyframes logo-midfield {
-        0%, 100% { transform: translateY(calc(-50% + 0px)) rotate(0deg); }
-        50%       { transform: translateY(calc(-50% - 18px)) rotate(2deg); }
-      }
-      @keyframes logo-visible {
-        0%, 100% { transform: translateY(calc(-50% + 0px)) rotate(-1.5deg); }
-        50%       { transform: translateY(calc(-50% - 24px)) rotate(2deg); }
-      }
-      @keyframes logo-drag {
-        0%   { transform: translateY(calc(-50% +  0px)) scaleY(1.00); }
-        22%  { transform: translateY(calc(-50% - 34px)) scaleY(1.00); }
-        42%  { transform: translateY(calc(-50% +  0px)) scaleY(0.82); }
-        58%  { transform: translateY(calc(-50% - 16px)) scaleY(1.00); }
-        72%  { transform: translateY(calc(-50% +  0px)) scaleY(0.92); }
-        86%  { transform: translateY(calc(-50% -  6px)) scaleY(1.00); }
-        100% { transform: translateY(calc(-50% +  0px)) scaleY(1.00); }
-      }
-
-      .logo-z0 { animation: logo-remote   4.0s ease-in-out infinite; }
-      .logo-z1 { animation: logo-soft     2.5s ease-in-out infinite; }
-      .logo-z2 { animation: logo-midfield 1.8s ease-in-out infinite; }
-      .logo-z3 { animation: logo-visible  1.1s ease-in-out infinite; }
-      .logo-z4 { animation: logo-drag     0.65s linear      infinite; }
     </style>
   </head>
   <body>
@@ -579,25 +548,62 @@
     </script>
 
     <script>
-      // Logo animations per zone
+      // Logo animations — JS-driven so zone transitions are seamless
       var logos = document.querySelectorAll('.side-logo');
-      var currentLogoClass = '';
-      function setLogoZone(idx) {
-        var cls = 'logo-z' + idx;
-        if (cls === currentLogoClass) return;
+
+      // Per zone: [amplitude px, frequency hz, rotation deg, bounce 0-1]
+      var ZONES = [
+        [  7, 0.25,  0,   0 ],   // REMOTE       — gentle hover
+        [ 13, 0.40,  0,   0 ],   // SOFT EDGE    — medium hover
+        [ 18, 0.56,  2,   0 ],   // MIDFIELD     — hover + tilt
+        [ 24, 0.91,  2.5, 0 ],   // VISIBLE CAMP — fast + tilt
+        [ 34, 1.54,  0,   1 ],   // MAIN DRAG    — bounce
+      ];
+
+      // Live values, start at midfield (zone 2)
+      var amp = 18, freq = 0.56, rot = 2, bnc = 0;
+      var tAmp = 18, tFreq = 0.56, tRot = 2, tBnc = 0;
+      var phase = 0, last = null;
+
+      function tick(now) {
+        if (!last) last = now;
+        var dt = Math.min((now - last) / 1000, 0.05);
+        last = now;
+
+        // Exponential smooth toward target — frame-rate independent, ~0.5s blend
+        var k = 1 - Math.exp(-dt * 6);
+        amp  += (tAmp  - amp)  * k;
+        freq += (tFreq - freq) * k;
+        rot  += (tRot  - rot)  * k;
+        bnc  += (tBnc  - bnc)  * k;
+
+        phase += freq * dt * Math.PI * 2;
+
+        var s = Math.sin(phase);
+        // Blend between sine (hover) and abs-sine (bounce-up-and-back)
+        var y = amp * ((1 - bnc) * s - bnc * Math.abs(s));
+        var r = rot * Math.sin(phase + 0.3);
+
         logos.forEach(function(el) {
-          if (currentLogoClass) el.classList.remove(currentLogoClass);
-          el.classList.add(cls);
+          el.style.transform =
+            'translateY(calc(-50% + ' + y.toFixed(1) + 'px)) rotate(' + r.toFixed(2) + 'deg)';
         });
-        currentLogoClass = cls;
+
+        requestAnimationFrame(tick);
       }
+      requestAnimationFrame(tick);
+
+      function setLogoZone(idx) {
+        tAmp = ZONES[idx][0]; tFreq = ZONES[idx][1];
+        tRot = ZONES[idx][2]; tBnc  = ZONES[idx][3];
+      }
+
       var origOnZone = window._onZone;
       window._onZone = function(t) {
         if (origOnZone) origOnZone(t);
         var idx = t < 0.2 ? 0 : t < 0.4 ? 1 : t < 0.6 ? 2 : t < 0.8 ? 3 : 4;
         setLogoZone(idx);
       };
-      setLogoZone(2); // start at midfield
     </script>
   </body>
 </html>
