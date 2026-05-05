@@ -94,14 +94,13 @@
         margin: 0;
       }
       .spark {
-        position: fixed;
+        position: absolute;
         width: 3px;
         height: 3px;
         border-radius: 50%;
         opacity: 0;
         animation: sparkFloat 2.5s ease-in-out infinite;
         pointer-events: none;
-        z-index: 999;
       }
       @keyframes sparkFloat {
         0%   { opacity: 0; transform: translateY(0) scale(1); }
@@ -268,7 +267,7 @@
       <h1>Sideburn 2026</h1>
       <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
     </div>
-    <div class="subtitle" id="subtitleEl">Camp Placement Tool</div>
+    <div class="subtitle">Camp Placement Tool</div>
     <div class="drag-instruction"><em>↔ drag along the line to see relationships ↔</em></div>
 
     <div class="graph-wrapper">
@@ -778,32 +777,26 @@
         tRot = ZONES[idx][2]; tBnc  = ZONES[idx][3];
       }
 
-      // Spark zone params: [minSize px, maxSize px, minDur s, maxDur s, rise vh]
+      // Spark zone params: [minSize px, maxSize px, minDur s, maxDur s, rise px]
       var SPARK_ZONES = [
-        [ 2.5,  5,  2.8, 4.5,  62 ],  // REMOTE
-        [ 3,    6,  2.2, 3.8,  70 ],  // SOFT EDGE
-        [ 3.5,  7,  1.8, 3.0,  78 ],  // MIDFIELD
-        [ 4.5,  9,  1.2, 2.2,  86 ],  // VISIBLE CAMP
-        [ 6,   14,  0.7, 1.4,  94 ],  // MAIN DRAG
+        [ 2.5,  5,  2.8, 4.5,  55 ],  // REMOTE       — more visible, float higher
+        [ 3,    6,  2.2, 3.8,  72 ],  // SOFT EDGE
+        [ 3.5,  7,  1.8, 3.0,  90 ],  // MIDFIELD
+        [ 4.5,  9,  1.2, 2.2, 112 ],  // VISIBLE CAMP
+        [ 6,   14,  0.7, 1.4, 140 ],  // MAIN DRAG    — large, fast, rocket
       ];
       var sparkEls = [];
+      const sparksContainer = document.getElementById("titleSparks");
       const sparkColors = ["#ff6b1a", "#e0226e", "#f5c000", "#7c4dbd", "#4caf50"];
-
-      function getSubtitleOrigin() {
-        var rect = document.getElementById("subtitleEl").getBoundingClientRect();
-        return { left: rect.left, width: rect.width, top: rect.top + rect.height * 0.5 };
-      }
-
       for (let i = 0; i < 14; i++) {
         const s = document.createElement("div");
         s.className = "spark";
-        var o = getSubtitleOrigin();
-        s.style.left = (o.left + Math.random() * o.width) + 'px';
-        s.style.top  = o.top + 'px';
+        s.style.left = Math.random() * 100 + "%";
+        s.style.top = (40 + Math.random() * 30) + "%";
         s.style.background = sparkColors[Math.floor(Math.random() * sparkColors.length)];
         s.style.animationDelay = (Math.random() * 2.5) + "s";
-        s._r = Math.random();
-        document.body.appendChild(s);
+        s._r = Math.random(); // per-spark variety factor, fixed at creation
+        sparksContainer.appendChild(s);
         sparkEls.push(s);
       }
 
@@ -814,15 +807,12 @@
         sTgt = SPARK_ZONES[idx].slice();
       }
 
-      // Duration, rise, and position only update at cycle boundary to prevent mid-flight jumps
+      // Duration and --rise only update at cycle boundary to prevent mid-flight jumps
       sparkEls.forEach(function(s) {
         s.addEventListener('animationiteration', function() {
           var r = s._r;
-          var o = getSubtitleOrigin();
-          s.style.left = (o.left + r * o.width) + 'px';
-          s.style.top  = o.top + 'px';
           s.style.animationDuration = (sNow[2] + r * (sNow[3] - sNow[2])).toFixed(2) + 's';
-          s.style.setProperty('--rise', '-' + sNow[4].toFixed(0) + 'vh');
+          s.style.setProperty('--rise', '-' + sNow[4].toFixed(0) + 'px');
         });
       });
 
