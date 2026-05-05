@@ -51,10 +51,9 @@
         padding: 20px;
         transition: background 0.3s ease, color 0.3s ease;
       }
-      .theme-toggle {
+      .theme-toggle, .audio-toggle {
         position: absolute;
         top: 50%;
-        right: -54px;
         transform: translateY(-50%);
         width: 36px;
         height: 36px;
@@ -70,10 +69,13 @@
         color: var(--text);
         transition: background 0.3s ease, border-color 0.3s ease;
       }
+      .theme-toggle { right: -54px; }
+      .audio-toggle  { left:  -54px; }
       @media (max-width: 900px) {
-        .theme-toggle { right: 4px; width: 32px; height: 32px; font-size: 0.9rem; }
+        .theme-toggle { position: fixed; top: 52px; right: 12px; width: 32px; height: 32px; font-size: 0.9rem; }
+        .audio-toggle  { position: fixed; top: 52px; left:  12px; width: 32px; height: 32px; font-size: 0.9rem; }
       }
-      .theme-toggle:hover { opacity: 0.85; }
+      .theme-toggle:hover, .audio-toggle:hover { opacity: 0.85; }
       .title-sparks {
         position: relative;
         text-align: center;
@@ -260,6 +262,7 @@
     <img class="side-logo logo-left"  src="3D SideBurn Logo.png" alt="Sideburn">
     <img class="side-logo logo-right" src="3D SideBurn Logo.png" alt="Sideburn">
     <div class="title-sparks" id="titleSparks">
+      <button type="button" class="audio-toggle" id="audioToggle" aria-label="Mute audio">🔊</button>
       <h1>Sideburn 2026</h1>
       <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button>
     </div>
@@ -709,6 +712,15 @@
           t.addEventListener("canplaythrough", advance, { once: true });
           setTimeout(advance, 10000); // fallback if canplaythrough never fires
         }([1, 4, 0, 3]));
+
+        var audioToggleBtn = document.getElementById('audioToggle');
+        if (audioToggleBtn) {
+          audioToggleBtn.addEventListener('click', function() {
+            var muted = !tracks[0].muted;
+            tracks.forEach(function(t) { t.muted = muted; });
+            audioToggleBtn.textContent = muted ? '🔇' : '🔊';
+          });
+        }
 
       } catch(e) { console.warn("Audio init failed:", e); }
     </script>
