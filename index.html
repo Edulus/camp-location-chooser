@@ -794,6 +794,13 @@
         sTgt = SPARK_ZONES[idx].slice();
       }
 
+      // Update --rise only at the start of each new cycle so mid-flight sparks never reverse
+      sparkEls.forEach(function(s) {
+        s.addEventListener('animationiteration', function() {
+          s.style.setProperty('--rise', '-' + sNow[4].toFixed(0) + 'px');
+        });
+      });
+
       var lastSparkTick = null;
       function sparkBlendTick(now) {
         if (!lastSparkTick) lastSparkTick = now;
@@ -808,7 +815,7 @@
           s.style.width  = size + 'px';
           s.style.height = size + 'px';
           s.style.animationDuration = dur + 's';
-          s.style.setProperty('--rise', '-' + sNow[4].toFixed(0) + 'px');
+          // --rise is intentionally NOT updated here; animationiteration handles it
         });
         requestAnimationFrame(sparkBlendTick);
       }
