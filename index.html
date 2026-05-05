@@ -222,7 +222,7 @@
         .slider-container { display: none; }
         .drag-hint { display: none; }
         .side-logo { display: none; }
-        .theme-toggle { position: fixed; top: 12px; right: 12px; }
+        .theme-toggle { position: fixed; top: 28px; right: 12px; }
         .graph-logo {
           display: block;
           position: absolute;
@@ -232,7 +232,7 @@
           z-index: 2;
         }
         .graph-logo-tl { left: 20%; top: 20%; }
-        .graph-logo-br { left: 67%; top: 67%; }
+        .graph-logo-br { left: 60%; top: 58%; }
       }
       [data-theme="dark"] svg.graph g[stroke="#e0e0e0"] { stroke: var(--grid); }
       [data-theme="dark"] svg.graph line[stroke="#bbb"],
@@ -695,7 +695,7 @@
 
     <script>
       // Logo animations — JS-driven so zone transitions are seamless
-      var logos = document.querySelectorAll('.side-logo');
+      var logos = document.querySelectorAll('.side-logo, .graph-logo');
 
       // Per zone: [amplitude px, frequency hz, rotation deg, bounce 0-1]
       var ZONES = [
