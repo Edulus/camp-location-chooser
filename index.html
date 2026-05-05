@@ -102,7 +102,8 @@
       }
       @keyframes sparkFloat {
         0%   { opacity: 0; transform: translateY(0) scale(1); }
-        20%  { opacity: 0.9; }
+        15%  { opacity: 0.95; }
+        65%  { opacity: 0.75; }
         100% { opacity: 0; transform: translateY(var(--rise, -40px)) scale(0); }
       }
       .subtitle {
@@ -765,11 +766,11 @@
 
       // Spark zone params: [minSize px, maxSize px, minDur s, maxDur s, rise px]
       var SPARK_ZONES = [
-        [ 1.5,  3,  3.5, 5.5,  20 ],  // REMOTE       — tiny, slow, barely float
-        [ 2,    4,  2.5, 4.5,  30 ],  // SOFT EDGE
-        [ 2.5,  6,  2.0, 3.5,  42 ],  // MIDFIELD
-        [ 3.5,  8,  1.3, 2.5,  60 ],  // VISIBLE CAMP
-        [ 5,   13,  0.8, 1.6,  85 ],  // MAIN DRAG    — large, fast, rocket
+        [ 2.5,  5,  2.8, 4.5,  55 ],  // REMOTE       — more visible, float higher
+        [ 3,    6,  2.2, 3.8,  72 ],  // SOFT EDGE
+        [ 3.5,  7,  1.8, 3.0,  90 ],  // MIDFIELD
+        [ 4.5,  9,  1.2, 2.2, 112 ],  // VISIBLE CAMP
+        [ 6,   14,  0.7, 1.4, 140 ],  // MAIN DRAG    — large, fast, rocket
       ];
       var sparkEls = [];
       const sparksContainer = document.getElementById("titleSparks");
