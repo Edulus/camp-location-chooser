@@ -787,19 +787,32 @@
         sparkEls.push(s);
       }
 
+      var sNow = SPARK_ZONES[2].slice(); // current effective params, start at midfield
+      var sTgt = SPARK_ZONES[2].slice(); // target params
+
       function updateSparks(idx) {
-        var z = SPARK_ZONES[idx];
+        sTgt = SPARK_ZONES[idx].slice();
+      }
+
+      var lastSparkTick = null;
+      function sparkBlendTick(now) {
+        if (!lastSparkTick) lastSparkTick = now;
+        var dt = Math.min((now - lastSparkTick) / 1000, 0.05);
+        lastSparkTick = now;
+        var k = 1 - Math.exp(-dt * 1.8); // ~0.9s blend time
+        for (var i = 0; i < 5; i++) sNow[i] += (sTgt[i] - sNow[i]) * k;
         sparkEls.forEach(function(s) {
           var r = s._r;
-          var size = (z[0] + r * (z[1] - z[0])).toFixed(1);
-          var dur  = (z[2] + r * (z[3] - z[2])).toFixed(2);
+          var size = (sNow[0] + r * (sNow[1] - sNow[0])).toFixed(1);
+          var dur  = (sNow[2] + r * (sNow[3] - sNow[2])).toFixed(2);
           s.style.width  = size + 'px';
           s.style.height = size + 'px';
           s.style.animationDuration = dur + 's';
-          s.style.setProperty('--rise', '-' + z[4] + 'px');
+          s.style.setProperty('--rise', '-' + sNow[4].toFixed(0) + 'px');
         });
+        requestAnimationFrame(sparkBlendTick);
       }
-      updateSparks(2); // start at midfield
+      requestAnimationFrame(sparkBlendTick);
 
       var origOnZone = window._onZone;
       window._onZone = function(t) {
