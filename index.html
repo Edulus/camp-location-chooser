@@ -211,6 +211,15 @@
       .logo-left  { left:  clamp(140px, 20vw, 280px); }
       .logo-right { right: clamp(140px, 20vw, 280px); }
       .graph-logo { display: none; }
+      .drag-hint {
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+        width: min(80vw, 400px);
+        font-size: 0.77rem;
+        letter-spacing: 0.1em;
+        margin-top: 4px;
+      }
       @media (max-width: 900px) {
         body {
           min-height: 100dvh;
@@ -242,15 +251,6 @@
       [data-theme="dark"] svg.graph line[stroke="#bbb"],
       [data-theme="dark"] svg.graph polygon[fill="#bbb"] { stroke: var(--axis); fill: var(--axis); }
       [data-theme="dark"] svg.graph text[fill="#555"] { fill: var(--axis-title); }
-      .drag-hint {
-        color: var(--muted);
-        display: flex;
-        justify-content: space-between;
-        width: min(80vw, 400px);
-        font-size: 0.77rem;
-        letter-spacing: 0.1em;
-        margin-top: 4px;
-      }
       .drag-instruction {
         color: var(--muted);
         margin-bottom: 16px;
