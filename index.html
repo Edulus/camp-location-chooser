@@ -264,7 +264,7 @@
     <div class="title-sparks" id="titleSparks">
       <button type="button" class="audio-toggle" id="audioToggle" aria-label="Mute audio">🔊</button>
       <h1>Sideburn 2026</h1>
-      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
     </div>
     <div class="subtitle">Camp Placement Tool</div>
     <div class="drag-instruction"><em>↔ drag along the line to see relationships ↔</em></div>
@@ -490,11 +490,11 @@
         const saved = localStorage.getItem("theme");
         const initial = saved || "dark";
         root.setAttribute("data-theme", initial);
-        btn.textContent = initial === "dark" ? "☾" : "☀";
+        btn.textContent = initial === "dark" ? "🌙" : "☀️";
         btn.addEventListener("click", function() {
           const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
           root.setAttribute("data-theme", next);
-          btn.textContent = next === "dark" ? "☾" : "☀";
+          btn.textContent = next === "dark" ? "🌙" : "☀️";
           localStorage.setItem("theme", next);
         });
       })();
