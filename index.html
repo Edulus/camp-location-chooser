@@ -207,6 +207,7 @@
       }
       .logo-left  { left:  clamp(140px, 20vw, 280px); }
       .logo-right { right: clamp(140px, 20vw, 280px); }
+      .graph-logo { display: none; }
       @media (max-width: 900px) {
         body {
           min-height: 100dvh;
@@ -218,13 +219,20 @@
         .subtitle { font-size: 0.95rem; letter-spacing: 0.22em; margin-bottom: 10px; }
         .graph-wrapper { width: min(96vw, 72vh); margin-top: 4px; }
         .readout { margin-top: 8px; }
-        .slider-container { margin-top: 10px; }
-        .slider { width: 90vw; }
-        .slider::-webkit-slider-thumb { width: 26px; height: 26px; }
-        .slider::-moz-range-thumb { width: 26px; height: 26px; }
-        .side-logo { width: clamp(60px, 16vw, 110px); opacity: 0.75; }
-        .logo-left  { left:  4px; }
-        .logo-right { right: 4px; }
+        .slider-container { display: none; }
+        .drag-hint { display: none; }
+        .side-logo { display: none; }
+        .theme-toggle { position: fixed; top: 12px; right: 12px; }
+        .graph-logo {
+          display: block;
+          position: absolute;
+          width: 22%;
+          pointer-events: none;
+          opacity: 0.82;
+          z-index: 2;
+        }
+        .graph-logo-tl { left: 20%; top: 20%; }
+        .graph-logo-br { left: 67%; top: 67%; }
       }
       [data-theme="dark"] svg.graph g[stroke="#e0e0e0"] { stroke: var(--grid); }
       [data-theme="dark"] svg.graph line[stroke="#bbb"],
@@ -244,6 +252,8 @@
     <div class="subtitle">Camp Placement Tool</div>
 
     <div class="graph-wrapper">
+      <img class="graph-logo graph-logo-tl" src="3D SideBurn Logo.png" alt="">
+      <img class="graph-logo graph-logo-br" src="3D SideBurn Logo.png" alt="">
       <svg class="graph" id="graph" viewBox="0 0 400 400">
         <defs>
           <filter id="glow">
