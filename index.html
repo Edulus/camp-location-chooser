@@ -490,11 +490,11 @@
         const saved = localStorage.getItem("theme");
         const initial = saved || "dark";
         root.setAttribute("data-theme", initial);
-        btn.textContent = initial === "dark" ? "☀" : "☾";
+        btn.textContent = initial === "dark" ? "☾" : "☀";
         btn.addEventListener("click", function() {
           const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
           root.setAttribute("data-theme", next);
-          btn.textContent = next === "dark" ? "☀" : "☾";
+          btn.textContent = next === "dark" ? "☾" : "☀";
           localStorage.setItem("theme", next);
         });
       })();
