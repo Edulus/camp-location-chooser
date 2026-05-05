@@ -794,9 +794,11 @@
         sTgt = SPARK_ZONES[idx].slice();
       }
 
-      // Update --rise only at the start of each new cycle so mid-flight sparks never reverse
+      // Duration and --rise only update at cycle boundary to prevent mid-flight jumps
       sparkEls.forEach(function(s) {
         s.addEventListener('animationiteration', function() {
+          var r = s._r;
+          s.style.animationDuration = (sNow[2] + r * (sNow[3] - sNow[2])).toFixed(2) + 's';
           s.style.setProperty('--rise', '-' + sNow[4].toFixed(0) + 'px');
         });
       });
@@ -806,16 +808,14 @@
         if (!lastSparkTick) lastSparkTick = now;
         var dt = Math.min((now - lastSparkTick) / 1000, 0.05);
         lastSparkTick = now;
-        var k = 1 - Math.exp(-dt * 1.8); // ~0.9s blend time
+        var k = 1 - Math.exp(-dt * 1.8);
         for (var i = 0; i < 5; i++) sNow[i] += (sTgt[i] - sNow[i]) * k;
+        // Only size changes live — duration and rise wait for animationiteration
         sparkEls.forEach(function(s) {
           var r = s._r;
           var size = (sNow[0] + r * (sNow[1] - sNow[0])).toFixed(1);
-          var dur  = (sNow[2] + r * (sNow[3] - sNow[2])).toFixed(2);
           s.style.width  = size + 'px';
           s.style.height = size + 'px';
-          s.style.animationDuration = dur + 's';
-          // --rise is intentionally NOT updated here; animationiteration handles it
         });
         requestAnimationFrame(sparkBlendTick);
       }
