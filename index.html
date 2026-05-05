@@ -238,7 +238,15 @@
       [data-theme="dark"] svg.graph line[stroke="#bbb"],
       [data-theme="dark"] svg.graph polygon[fill="#bbb"] { stroke: var(--axis); fill: var(--axis); }
       [data-theme="dark"] svg.graph text[fill="#555"] { fill: var(--axis-title); }
-      .drag-hint { color: var(--muted); }
+      .drag-hint {
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+        width: min(80vw, 400px);
+        font-size: 0.77rem;
+        letter-spacing: 0.1em;
+        margin-top: 4px;
+      }
 
     </style>
   </head>
@@ -445,8 +453,8 @@
 
     <div class="slider-container">
       <div class="slider-labels">
-        <span>REMOTE</span>
-        <span>CENTRAL</span>
+        <span>QUIET</span>
+        <span>NOISY</span>
       </div>
       <input
         type="range"
@@ -458,7 +466,7 @@
       />
     </div>
 
-    <div class="drag-hint">↔ drag along the line or use the slider</div>
+    <div class="drag-hint"><span>REMOTE</span><span>CENTRAL</span></div>
 
     <script>
       (function() {
